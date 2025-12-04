@@ -1,0 +1,91 @@
+/* 登录页面样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 40px 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    color: #999;
+    font-size: 14px;
+}
+
+.login-form .layui-form-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.login-form .layui-form-item label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 18px;
+    z-index: 1;
+}
+
+.login-form .layui-input {
+    height: 48px;
+    padding-left: 45px;
+    border-radius: 5px;
+    border: 1px solid #e6e6e6;
+    transition: all 0.3s;
+}
+
+.login-form .layui-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.login-form .layui-btn {
+    height: 48px;
+    font-size: 16px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s;
+}
+
+.login-form .layui-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.login-form .layui-form-checkbox span {
+    color: #666;
+}

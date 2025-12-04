@@ -1,0 +1,11 @@
+# Layui 框架文件目录
+# 请从 https://layui.dev/ 下载 layui 框架
+# 下载后将 layui 文件夹内容解压到此目录
+# 
+# 目录结构应为:
+# layui/
+# ├── css/
+# │   └── layui.css
+# ├── font/
+# │   └── ...
+# └── layui.js

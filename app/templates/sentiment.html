@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舆情分析</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='layui/layui-v2.13.2/layui/css/layui.css') }}">
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+    <style>
+        body { padding: 15px; background: #f2f2f2; }
+        .search-box { background: #fff; padding: 20px; border-radius: 5px; margin-bottom: 15px; }
+        .stats-box { background: #fff; padding: 20px; border-radius: 5px; margin-bottom: 15px; }
+        .data-box { background: #fff; padding: 20px; border-radius: 5px; }
+        .stat-card { text-align: center; padding: 20px; border-radius: 8px; color: #fff; }
+        .stat-card h3 { font-size: 32px; margin-bottom: 5px; }
+        .stat-card p { font-size: 14px; opacity: 0.9; }
+        .stat-positive { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .stat-negative { background: linear-gradient(135deg, #eb3349, #f45c43); }
+        .stat-neutral { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .stat-total { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .sentiment-tag { padding: 3px 8px; border-radius: 3px; font-size: 12px; }
+        .sentiment-positive { background: #d4edda; color: #155724; }
+        .sentiment-negative { background: #f8d7da; color: #721c24; }
+        .sentiment-neutral { background: #e2e3e5; color: #383d41; }
+        #chart-container { height: 300px; }
+    </style>
+</head>
+<body>
+    <!-- 搜索爬取区域 -->
+    <div class="search-box">
+        <div class="layui-form">
+            <div class="layui-form-item" style="margin-bottom: 0;">
+                <div class="layui-inline">
+                    <label class="layui-form-label">关键词</label>
+                    <div class="layui-input-inline" style="width: 200px;">
+                        <input type="text" id="keyword" placeholder="请输入搜索关键词" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">搜索引擎</label>
+                    <div class="layui-input-inline" style="width: 120px;">
+                        <select id="engine">
+                            <option value="bing">必应</option>
+                            <option value="baidu">百度</option>
+                            <option value="all">全部</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">页数</label>
+                    <div class="layui-input-inline" style="width: 80px;">
+                        <select id="pages">
+                            <option value="1">1页</option>
+                            <option value="2">2页</option>
+                            <option value="3">3页</option>
+                            <option value="5">5页</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-normal" id="btn-crawl">
+                        <i class="layui-icon layui-icon-search"></i> 开始爬取
+                    </button>
+                    <button class="layui-btn" id="btn-refresh">
+                        <i class="layui-icon layui-icon-refresh"></i> 刷新数据
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-box">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md3">
+                <div class="stat-card stat-total">
+                    <h3 id="stat-total">0</h3>
+                    <p>总数据量</p>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="stat-card stat-positive">
+                    <h3 id="stat-positive">0</h3>
+                    <p>正面舆情</p>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="stat-card stat-negative">
+                    <h3 id="stat-negative">0</h3>
+                    <p>负面舆情</p>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="stat-card stat-neutral">
+                    <h3 id="stat-neutral">0</h3>
+                    <p>中性舆情</p>
+                </div>
+            </div>
+        </div>
+        <!-- 图表 -->
+        <div id="chart-container" style="margin-top: 20px;"></div>
+    </div>
+
+    <!-- 数据列表 -->
+    <div class="data-box">
+        <div class="layui-form" style="margin-bottom: 15px;">
+            <div class="layui-inline">
+                <input type="text" id="filter-keyword" placeholder="按关键词筛选" class="layui-input" style="width: 150px;">
+            </div>
+            <div class="layui-inline">
+                <select id="filter-sentiment" style="width: 120px;">
+                    <option value="">全部情感</option>
+                    <option value="positive">正面</option>
+                    <option value="negative">负面</option>
+                    <option value="neutral">中性</option>
+                </select>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn layui-btn-sm" id="btn-filter">筛选</button>
+            </div>
+        </div>
+        <table class="layui-hide" id="data-table" lay-filter="data-table"></table>
+    </div>
+
+    <script src="{{ url_for('static', filename='layui/layui-v2.13.2/layui/layui.js') }}"></script>
+    <script>
+    layui.use(['table', 'form', 'layer'], function(){
+        var table = layui.table;
+        var form = layui.form;
+        var layer = layui.layer;
+        var $ = layui.$;
+
+        // 初始化表格
+        var dataTable = table.render({
+            elem: '#data-table',
+            url: '/api/search_results',
+            page: true,
+            cols: [[
+                {field: 'id', title: 'ID', width: 60, sort: true},
+                {field: 'keyword', title: '关键词', width: 100},
+                {field: 'title', title: '标题', minWidth: 200, templet: function(d){
+                    return '<a href="' + d.link + '" target="_blank" style="color:#1E9FFF;">' + d.title + '</a>';
+                }},
+                {field: 'source', title: '来源', width: 120},
+                {field: 'engine', title: '引擎', width: 80},
+                {field: 'sentiment', title: '情感', width: 80, templet: function(d){
+                    var cls = 'sentiment-' + d.sentiment;
+                    var text = d.sentiment === 'positive' ? '正面' : (d.sentiment === 'negative' ? '负面' : '中性');
+                    return '<span class="sentiment-tag ' + cls + '">' + text + '</span>';
+                }},
+                {field: 'crawl_time', title: '爬取时间', width: 160}
+            ]],
+            parseData: function(res){
+                return {
+                    "code": res.code,
+                    "msg": res.msg,
+                    "count": res.count,
+                    "data": res.data
+                };
+            },
+            response: {
+                statusCode: 0
+            }
+        });
+
+        // 加载统计数据
+        function loadStats(){
+            $.get('/api/sentiment_stats', function(res){
+                if(res.code === 0){
+                    var data = res.data;
+                    $('#stat-total').text(data.total);
+                    $('#stat-positive').text(data.stats.positive);
+                    $('#stat-negative').text(data.stats.negative);
+                    $('#stat-neutral').text(data.stats.neutral);
+                    
+                    // 更新图表
+                    renderChart(data.stats);
+                }
+            });
+        }
+
+        // 渲染图表
+        function renderChart(stats){
+            var chart = echarts.init(document.getElementById('chart-container'));
+            var option = {
+                tooltip: { trigger: 'item' },
+                legend: { bottom: '5%', left: 'center' },
+                series: [{
+                    name: '舆情分布',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 },
+                    label: { show: false, position: 'center' },
+                    emphasis: {
+                        label: { show: true, fontSize: 20, fontWeight: 'bold' }
+                    },
+                    labelLine: { show: false },
+                    data: [
+                        { value: stats.positive, name: '正面', itemStyle: { color: '#38ef7d' } },
+                        { value: stats.negative, name: '负面', itemStyle: { color: '#f45c43' } },
+                        { value: stats.neutral, name: '中性', itemStyle: { color: '#4facfe' } }
+                    ]
+                }]
+            };
+            chart.setOption(option);
+        }
+
+        // 开始爬取
+        $('#btn-crawl').on('click', function(){
+            var keyword = $('#keyword').val().trim();
+            if(!keyword){
+                layer.msg('请输入关键词', {icon: 2});
+                return;
+            }
+            
+            var loadIndex = layer.load(1, {shade: [0.3, '#000']});
+            
+            $.ajax({
+                url: '/api/crawl',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    keyword: keyword,
+                    engine: $('#engine').val(),
+                    pages: parseInt($('#pages').val())
+                }),
+                success: function(res){
+                    layer.close(loadIndex);
+                    if(res.code === 0){
+                        layer.msg(res.msg, {icon: 1});
+                        dataTable.reload();
+                        loadStats();
+                    } else {
+                        layer.msg(res.msg, {icon: 2});
+                    }
+                },
+                error: function(){
+                    layer.close(loadIndex);
+                    layer.msg('请求失败', {icon: 2});
+                }
+            });
+        });
+
+        // 刷新数据
+        $('#btn-refresh').on('click', function(){
+            dataTable.reload();
+            loadStats();
+        });
+
+        // 筛选
+        $('#btn-filter').on('click', function(){
+            dataTable.reload({
+                where: {
+                    keyword: $('#filter-keyword').val(),
+                    sentiment: $('#filter-sentiment').val()
+                },
+                page: { curr: 1 }
+            });
+        });
+
+        // 初始加载
+        loadStats();
+        form.render();
+    });
+    </script>
+</body>
+</html>

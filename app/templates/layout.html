@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舆情分析系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='layui/layui-v2.13.2/layui/css/layui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <!-- 头部区域 -->
+        <div class="layui-header">
+            <div class="layui-logo">
+                <span>舆情分析系统</span>
+            </div>
+            <!-- 头部右侧菜单 -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-username"></i>
+                        管理员
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">个人信息</a></dd>
+                        <dd><a href="javascript:;">修改密码</a></dd>
+                        <dd><a href="{{ url_for('main.logout') }}">退出登录</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 左侧导航区域 -->
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree" lay-filter="side-nav">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-home"></i>
+                            控制台
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="/dashboard">系统概览</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-download-circle"></i>
+                            数据采集管理
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="/data_collect">数据采集</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-chart"></i>
+                            舆情分析
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="/sentiment">舆情统计分析</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-user"></i>
+                            用户管理
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="/users">用户列表</a></dd>
+                            <dd><a href="javascript:;" data-url="/users/add">添加用户</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-set"></i>
+                            系统设置
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="/settings">基本设置</a></dd>
+                            <dd><a href="javascript:;" data-url="/logs">系统日志</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 主体内容区域 -->
+        <div class="layui-body">
+            <div class="layui-tab layui-tab-brief" lay-filter="content-tab" lay-allowclose="true">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">首页</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="welcome-container">
+                            <h2>欢迎使用舆情分析系统</h2>
+                            <p>请从左侧菜单选择功能模块</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部区域 -->
+        <div class="layui-footer">
+            © 2024 舆情分析系统 - Powered by Flask + Layui
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='layui/layui-v2.13.2/layui/layui.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

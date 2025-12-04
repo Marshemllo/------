@@ -1,0 +1,171 @@
+/* 后台管理页面样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* Logo 样式 */
+.layui-logo {
+    background-color: #20222A !important;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 60px;
+}
+
+/* 头部样式 */
+.layui-header {
+    background-color: #2F4056;
+}
+
+.layui-layout-right {
+    right: 20px;
+}
+
+.layui-layout-right .layui-nav-item a {
+    color: #fff;
+}
+
+/* 侧边栏样式 */
+.layui-side {
+    background-color: #20222A;
+}
+
+.layui-nav-tree {
+    background-color: #20222A;
+}
+
+.layui-nav-tree .layui-nav-item a {
+    color: #b3b3b3;
+    transition: all 0.3s;
+}
+
+.layui-nav-tree .layui-nav-item a:hover {
+    color: #fff;
+    background-color: #1E9FFF;
+}
+
+.layui-nav-tree .layui-nav-child dd.layui-this,
+.layui-nav-tree .layui-nav-child dd.layui-this a {
+    background-color: #1E9FFF;
+    color: #fff;
+}
+
+.layui-nav-tree .layui-nav-item .layui-icon {
+    margin-right: 10px;
+}
+
+/* 主体内容区域 */
+.layui-body {
+    padding: 15px;
+    background-color: #f2f2f2;
+}
+
+.layui-tab {
+    margin: 0;
+}
+
+.layui-tab-title {
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.layui-tab-title li {
+    min-width: 100px;
+    text-align: center;
+}
+
+.layui-tab-content {
+    padding: 15px;
+    background-color: #fff;
+    min-height: calc(100vh - 180px);
+}
+
+/* 欢迎页面 */
+.welcome-container {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.welcome-container h2 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.welcome-container p {
+    color: #999;
+    font-size: 16px;
+}
+
+/* 底部样式 */
+.layui-footer {
+    background-color: #fff;
+    text-align: center;
+    color: #999;
+    border-top: 1px solid #e6e6e6;
+}
+
+/* 表格样式优化 */
+.layui-table-view {
+    margin: 0;
+}
+
+/* 卡片样式 */
+.admin-card {
+    background: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-card-header {
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.admin-card-header h3 {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* 统计卡片 */
+.stat-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+}
+
+.stat-card.green {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card.orange {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card.blue {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card h4 {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.stat-card .stat-num {
+    font-size: 36px;
+    font-weight: 600;
+}
